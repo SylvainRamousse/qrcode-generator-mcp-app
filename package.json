@@ -1,0 +1,39 @@
+{
+  "name": "qrcode-generator-mcp-app",
+  "version": "1.0.0",
+  "description": "MCP App for generating QR codes from URLs, text, phone numbers, WiFi credentials, and more",
+  "type": "module",
+  "scripts": {
+    "build": "vite build && tsc",
+    "build:ui": "vite build",
+    "build:server": "tsc",
+    "dev": "tsx main.ts",
+    "dev:stdio": "tsx main.ts --stdio",
+    "start": "node dist/main.js",
+    "vercel-build": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/ext-apps": "latest",
+    "@modelcontextprotocol/sdk": "latest",
+    "cors": "latest",
+    "express": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "@types/cors": "latest",
+    "@types/express": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "@vitejs/plugin-react": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vite": "latest",
+    "vite-plugin-singlefile": "latest"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
