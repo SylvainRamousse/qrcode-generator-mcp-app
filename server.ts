@@ -5,10 +5,15 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 
-// Works both from source (server.ts) and compiled (dist/server.js)
-const DIST_DIR = import.meta.filename.endsWith(".ts")
-  ? path.join(import.meta.dirname, "dist")
-  : import.meta.dirname;
+// Resolve the dist directory containing index.html:
+// - Vercel serverless:  process.cwd() is the project root, dist/ is included via vercel.json
+// - Local TypeScript:   server.ts sits at project root, dist/ is a sibling
+// - Compiled (dist/):   server.js is inside dist/ alongside index.html
+const DIST_DIR = process.env.VERCEL
+  ? path.join(process.cwd(), "dist")
+  : import.meta.filename.endsWith(".ts")
+    ? path.join(import.meta.dirname, "dist")
+    : import.meta.dirname;
 
 // QR code type schema
 const QRCodeTypeSchema = z.enum([
