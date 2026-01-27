@@ -54,9 +54,15 @@ Deploying to Vercel allows you to:
 
 4. **Configure the project:**
    - **Framework Preset:** Other
-   - **Build Command:** `npm run vercel-build`
-   - **Output Directory:** `dist`
-   - **Install Command:** `npm install`
+   - **Build Command:** `npm run vercel-build` (override ON)
+   - **Output Directory:** leave empty (override OFF)
+   - **Install Command:** `npm install` (override ON)
+
+   > **Important:** Do NOT set Output Directory. Setting it to `dist`
+   > makes Vercel serve static files instead of running the serverless
+   > function, which causes 404 errors on all API routes.
+   > The `vercel.json` file and `api/` directory handle routing
+   > to the serverless function automatically.
 
 5. **Click "Deploy"**
 
@@ -186,6 +192,15 @@ You'll see server status and available endpoints.
 - Missing dependencies: Make sure `package.json` is up to date
 - Build errors: Run `npm run build` locally first
 - Node version: Vercel uses Node 18+ by default
+
+### All Routes Return 404
+
+This almost always means the **Output Directory** is set in Vercel's dashboard.
+Go to Settings → General → Build & Development Settings and make sure the
+"Output Directory" override is **toggled OFF** (empty). Then redeploy.
+
+Setting it to `dist` tells Vercel to serve the build output as static files,
+bypassing the serverless function entirely.
 
 ### Server Not Responding
 

@@ -37,9 +37,14 @@ git push -u origin main
 
 4. **Configure (use these exact settings):**
    - **Framework Preset:** Other
-   - **Build Command:** `npm run vercel-build`
-   - **Output Directory:** `dist`
-   - **Install Command:** `npm install`
+   - **Build Command:** `npm run vercel-build` (override ON)
+   - **Output Directory:** leave empty (override OFF)
+   - **Install Command:** `npm install` (override ON)
+
+   > **Important:** Do NOT set Output Directory to `dist`. That would make
+   > Vercel serve the project as a static site instead of running the
+   > serverless function. The `vercel.json` and `api/` directory handle
+   > routing automatically.
 
 5. **Click "Deploy"**
 
@@ -106,6 +111,17 @@ git push
 ```
 
 ## Troubleshooting
+
+### All Routes Return 404
+
+The most common cause: **Output Directory is set in Vercel dashboard.**
+
+1. Go to your project → Settings → General → Build & Development Settings
+2. Make sure **Output Directory** override is **toggled OFF** (empty)
+3. Redeploy the project
+
+Setting Output Directory to `dist` makes Vercel serve static files instead
+of running the serverless function.
 
 ### Build Failed on Vercel
 

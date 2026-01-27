@@ -126,7 +126,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to Ver
 
 **Quick deploy:**
 1. Push to GitHub
-2. Import to Vercel
+2. Import to Vercel (Framework: Other, Build Command: `npm run vercel-build`, **no Output Directory**)
 3. Deploy automatically
 4. Use your Vercel URL in Claude Desktop config
 
@@ -136,12 +136,14 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to Ver
 
 ```
 qrcode-generator-mcp-app/
-├── main.ts               # Entry point (HTTP/stdio server)
+├── main.ts               # Entry point (HTTP/stdio/Vercel)
 ├── server.ts             # MCP server with tool registration
+├── api/
+│   └── index.ts         # Vercel serverless function entry point
 ├── src/
 │   ├── mcp-app.tsx      # React UI component
 │   └── styles.css       # Styling with host theme integration
-├── dist/
+├── dist/                 # Build output (generated)
 │   ├── index.html       # Built UI (single-file bundle)
 │   ├── main.js          # Compiled server entry point
 │   └── server.js        # Compiled server logic
@@ -269,6 +271,11 @@ The `generate_qrcode` tool accepts:
 - Check port 3001 is not in use
 - Review error logs in terminal
 - Verify all dependencies are installed
+
+### Vercel Routes Return 404
+- **Do NOT set Output Directory** in Vercel dashboard -- toggle it OFF
+- Setting it to `dist` makes Vercel serve static files instead of running the serverless function
+- After changing the setting, redeploy from the Vercel dashboard
 
 ### Claude Desktop Not Connecting
 - Verify config path is absolute, not relative

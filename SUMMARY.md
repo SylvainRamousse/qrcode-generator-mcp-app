@@ -55,8 +55,10 @@ qrcode-generator-mcp-app/
 │   └── .gitignore                # Git ignore rules
 │
 ├── 🖥️  Server Files
-│   ├── main.ts                   # Entry point (HTTP/stdio modes)
-│   └── server.ts                 # MCP server with tool registration
+│   ├── main.ts                   # Entry point (HTTP/stdio/Vercel)
+│   ├── server.ts                 # MCP server with tool registration
+│   └── api/
+│       └── index.ts             # Vercel serverless function entry point
 │
 ├── 🎨 UI Files
 │   ├── index.html                # HTML entry point
@@ -96,10 +98,11 @@ qrcode-generator-mcp-app/
 - **Stdio mode**: `npm run dev:stdio --stdio`
 
 ### 3. Vercel Configuration
-- Serverless function deployment
-- Automatic build and deploy
-- Environment configuration
-- Route handling
+- `api/index.ts` entry point for Vercel's serverless function auto-detection
+- `vercel.json` rewrites all routes to the `/api` function
+- `includeFiles` ensures `dist/index.html` is bundled with the function
+- Express app is exported as default (not `listen()`) for serverless compatibility
+- **Output Directory must NOT be set** in Vercel dashboard (causes static-site mode)
 
 ### 4. Updated Scripts
 

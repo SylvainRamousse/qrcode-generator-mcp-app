@@ -4,7 +4,8 @@
       "command": "npx",
       "args": [
         "tsx",
-        "/absolute/path/to/qrcode-generator-mcp-app/server.ts"
+        "/absolute/path/to/qrcode-generator-mcp-app/main.ts",
+        "--stdio"
       ]
     }
   }

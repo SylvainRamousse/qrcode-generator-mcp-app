@@ -43,7 +43,8 @@ Add this configuration (replace with your actual path):
       "command": "npx",
       "args": [
         "tsx",
-        "/Users/yourname/path/to/qrcode-generator-mcp-app/server.ts"
+        "/Users/yourname/path/to/qrcode-generator-mcp-app/main.ts",
+        "--stdio"
       ]
     }
   }
@@ -128,15 +129,19 @@ Generate a text QR code with "Hello World!"
 
 ```
 qrcode-generator-mcp-app/
-├── server.ts              # MCP server (tool + resource registration)
+├── main.ts               # Entry point (HTTP/stdio/Vercel)
+├── server.ts             # MCP server (tool + resource registration)
+├── api/
+│   └── index.ts         # Vercel serverless function entry point
 ├── src/
-│   ├── mcp-app.tsx       # React UI with QR generation logic
-│   └── styles.css        # Themed styling
-├── dist/
-│   └── index.html        # Built UI (single-file bundle)
-├── package.json          # Dependencies and scripts
-├── vite.config.ts        # Build configuration
-└── setup.sh              # Quick setup script
+│   ├── mcp-app.tsx      # React UI with QR generation logic
+│   └── styles.css       # Themed styling
+├── dist/                 # Build output (generated)
+│   └── index.html       # Built UI (single-file bundle)
+├── vercel.json          # Vercel deployment config
+├── package.json         # Dependencies and scripts
+├── vite.config.ts       # Build configuration
+└── setup.sh             # Quick setup script
 ```
 
 ## Tech Stack
