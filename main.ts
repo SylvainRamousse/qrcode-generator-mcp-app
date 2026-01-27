@@ -40,8 +40,9 @@ function createApp() {
     res.json({ status: "healthy" });
   });
 
-  // MCP endpoint — creates a fresh server per request (stateless)
-  app.all("/mcp", async (req: Request, res: Response) => {
+  // MCP endpoint — stateless: one fresh server per POST request.
+  // Following the SDK's stateless pattern with separate method handlers.
+  app.post("/mcp", async (req: Request, res: Response) => {
     const server = createServer();
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
@@ -65,6 +66,27 @@ function createApp() {
         });
       }
     }
+  });
+
+  // Stateless servers do not support GET (SSE streams) or DELETE (sessions).
+  app.get("/mcp", (_req: Request, res: Response) => {
+    res.writeHead(405).end(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        error: { code: -32000, message: "Method not allowed." },
+        id: null,
+      })
+    );
+  });
+
+  app.delete("/mcp", (_req: Request, res: Response) => {
+    res.writeHead(405).end(
+      JSON.stringify({
+        jsonrpc: "2.0",
+        error: { code: -32000, message: "Method not allowed." },
+        id: null,
+      })
+    );
   });
 
   return app;
