@@ -1,307 +1,138 @@
-# QR Code Generator MCP App
+# Color Picker MCP App
 
-An MCP (Model Context Protocol) App that generates QR codes for various types of content including URLs, plain text, email addresses, phone numbers, SMS, WiFi credentials, and vCards.
+Une application MCP simple qui expose une interface interactive de color picker.
 
-## Features
+## Architecture
 
-- **Multiple QR Code Types:**
-  - 🔗 URLs and web links
-  - 📝 Plain text
-  - 📧 Email addresses
-  - 📱 Phone numbers
-  - 💬 SMS messages
-  - 📶 WiFi credentials
-  - 👤 vCards (contact information)
+Cette MCP App démontre :
+- **Serveur MCP** : Expose un tool `pick_color` avec métadonnées UI
+- **Ressource UI** : Interface HTML/JS interactive qui s'affiche dans Claude
+- **Communication bidirectionnelle** : L'UI peut mettre à jour le contexte du modèle
 
-- **Interactive UI:**
-  - Real-time QR code generation
-  - Visual preview of generated codes
-  - Download as SVG or PNG
+## Installation
 
-- **Host Integration:**
-  - Adapts to host theme (light/dark mode)
-  - Uses host typography and colors
-  - Responsive layout
-
-- **Deployment Options:**
-  - ☁️ Remote server (Vercel) - Use from anywhere!
-  - 💻 Local server (stdio) - Traditional Claude Desktop integration
-
-## Quick Start
-
-### Option 1: Use Remote Server (Recommended)
-
-The easiest way to use this MCP app is to deploy it to Vercel:
-
-1. **Fork and deploy to Vercel** (see [DEPLOYMENT.md](DEPLOYMENT.md))
-2. **Configure Claude Desktop** with your Vercel URL:
-   ```json
-   {
-     "mcpServers": {
-       "qrcode-generator": {
-         "url": "https://your-app.vercel.app/mcp"
-       }
-     }
-   }
-   ```
-3. **Restart Claude Desktop**
-
-### Option 2: Run Locally
-
-For local development or if you prefer to run your own server:
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Build the UI:**
-   ```bash
-   npm run build
-   ```
-
-3. **Configure Claude Desktop:**
-
-   On macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-   On Windows: `%APPDATA%\Claude\claude_desktop_config.json`
-
-   ```json
-   {
-     "mcpServers": {
-       "qrcode-generator": {
-         "command": "npx",
-         "args": [
-           "tsx",
-           "/absolute/path/to/qrcode-generator-mcp-app/main.ts",
-           "--stdio"
-         ]
-       }
-     }
-   }
-   ```
-
-4. **Restart Claude Desktop**
-
-## Usage Examples
-
-Once configured, ask Claude to generate QR codes:
-
-### URL
-```
-Generate a QR code for https://github.com
+```bash
+npm install
+npm run build
 ```
 
-### WiFi Network
-```
-Create a WiFi QR code for network "MyHomeWiFi" with password "SecurePass123" using WPA security
+## Utilisation
+
+### 1. Démarrer le serveur
+
+```bash
+npm start
 ```
 
-### Contact Card (vCard)
-```
-Generate a vCard QR code for:
-- Name: John Doe
-- Email: john@example.com
-- Phone: +1-555-0123
-- Organization: Acme Corp
-```
+### 2. Configurer dans Claude Desktop
 
-### Phone Number
-```
-Make a QR code for phone number +1-555-0123
-```
+Ajoute dans `~/Library/Application Support/Claude/claude_desktop_config.json` :
 
-### Email
-```
-Create an email QR code for contact@example.com
+```json
+{
+  "mcpServers": {
+    "color-picker": {
+      "command": "node",
+      "args": ["/chemin/vers/color-picker-mcp/dist/index.js"]
+    }
+  }
+}
 ```
 
-### Plain Text
-```
-Generate a text QR code with "Hello World!"
-```
+### 3. Utiliser dans Claude
 
-## Deployment
+Une fois configuré, tu peux demander à Claude :
+- "Open the color picker"
+- "Let me choose a color"
+- "Pick a color for my website"
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions on deploying to Vercel.
+L'interface s'affichera directement dans la conversation !
 
-**Quick deploy:**
-1. Push to GitHub
-2. Import to Vercel (Framework: Other, Build Command: `npm run vercel-build`, **no Output Directory**)
-3. Deploy automatically
-4. Use your Vercel URL in Claude Desktop config
-
-## Development
-
-### Project Structure
+## Structure du projet
 
 ```
-qrcode-generator-mcp-app/
-├── main.ts               # Entry point (HTTP/stdio/Vercel)
-├── server.ts             # MCP server with tool registration
-├── api/
-│   └── index.ts         # Vercel serverless function entry point
+color-picker-mcp/
 ├── src/
-│   ├── mcp-app.tsx      # React UI component
-│   └── styles.css       # Styling with host theme integration
-├── dist/                 # Build output (generated)
-│   ├── index.html       # Built UI (single-file bundle)
-│   ├── main.js          # Compiled server entry point
-│   └── server.js        # Compiled server logic
-├── vercel.json          # Vercel deployment config
-├── package.json         # Dependencies and scripts
-└── README.md            # This file
+│   └── index.ts          # Serveur MCP
+├── ui/
+│   └── color-picker.html # Interface interactive
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-### Available Scripts
+## Concepts clés MCP Apps
 
-```bash
-# Development
-npm run dev              # Run HTTP server (port 3001)
-npm run dev:stdio        # Run stdio server (for Claude Desktop)
-
-# Building
-npm run build            # Build UI and compile TypeScript
-npm run build:ui         # Build UI only
-npm run build:server     # Compile TypeScript only
-
-# Production
-npm start                # Run compiled HTTP server
-```
-
-### Local Development
-
-**Run HTTP server:**
-```bash
-npm run dev
-```
-Visit http://localhost:3001/health to verify it's running.
-
-**Run stdio server:**
-```bash
-npm run dev:stdio
-```
-Connect via Claude Desktop configuration.
-
-### Testing
-
-Test the HTTP endpoint:
-```bash
-# Health check
-curl http://localhost:3001/health
-
-# Server info
-curl http://localhost:3001/
-```
-
-## Key Technologies
-
-- **@modelcontextprotocol/ext-apps** - MCP Apps SDK
-- **@modelcontextprotocol/sdk** - Core MCP SDK
-- **React** - UI framework
-- **Express** - HTTP server
-- **Vite** - Build tool with single-file plugin
-- **TypeScript** - Type safety
-
-## Tool Schema
-
-The `generate_qrcode` tool accepts:
+### 1. Tool avec UI metadata
 
 ```typescript
 {
-  type: "text" | "url" | "email" | "phone" | "sms" | "wifi" | "vcard",
-  content: string,
-  // WiFi-specific (optional)
-  wifiSecurity?: "WPA" | "WEP" | "nopass",
-  wifiHidden?: boolean,
-  // vCard-specific (optional)
-  vcardName?: string,
-  vcardOrg?: string,
-  vcardTitle?: string,
-  vcardEmail?: string,
-  vcardPhone?: string,
-  vcardAddress?: string,
-  vcardUrl?: string
-}
-```
-
-## Configuration Examples
-
-### Remote Server (Vercel)
-```json
-{
-  "mcpServers": {
-    "qrcode-generator": {
-      "url": "https://your-app.vercel.app/mcp"
+  name: "pick_color",
+  description: "Open interactive color picker",
+  _meta: {
+    ui: {
+      resourceUri: "ui://color-picker"
     }
   }
 }
 ```
 
-### Local Stdio (Development)
-```json
-{
-  "mcpServers": {
-    "qrcode-generator": {
-      "command": "npx",
-      "args": ["tsx", "/path/to/qrcode-generator-mcp-app/main.ts", "--stdio"]
-    }
+### 2. UI Resource
+
+Le serveur sert du HTML via le schéma `ui://` :
+
+```typescript
+server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
+  if (request.params.uri === "ui://color-picker") {
+    return { contents: [{ uri: request.params.uri, mimeType: "text/html", text: html }] };
   }
-}
+});
 ```
 
-### Local HTTP (Testing)
-```json
-{
-  "mcpServers": {
-    "qrcode-generator": {
-      "url": "http://localhost:3001/mcp"
-    }
-  }
-}
+### 3. App API dans l'UI
+
+L'interface utilise `@modelcontextprotocol/ext-apps` :
+
+```javascript
+import { App } from "@modelcontextprotocol/ext-apps";
+
+const app = new App();
+await app.connect();
+
+// Mettre à jour le contexte du modèle
+await app.updateModelContext({
+  content: [{ type: "text", text: "User selected #3b82f6" }]
+});
+
+// Envoyer un message
+await app.sendMessage({
+  role: "user", 
+  content: [{ type: "text", text: "I've selected the color" }]
+});
 ```
 
-## Troubleshooting
+## Étendre cet exemple
 
-### Build Errors
-- Make sure Node.js 18+ is installed
-- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
-- Rebuild: `npm run build`
+Tu peux facilement adapter ce template pour créer :
+- 📊 Dashboards de données
+- 📝 Formulaires complexes
+- 📈 Visualisations interactives
+- 🗺️ Cartes interactives
+- 📄 Viewers de documents
+- ⚙️ Configuration wizards
 
-### Server Not Starting
-- Check port 3001 is not in use
-- Review error logs in terminal
-- Verify all dependencies are installed
+L'essentiel est que l'UI communique avec le host via `postMessage` et que le serveur MCP déclare correctement les métadonnées UI.
 
-### Vercel Routes Return 404
-- **Do NOT set Output Directory** in Vercel dashboard -- toggle it OFF
-- Setting it to `dist` makes Vercel serve static files instead of running the serverless function
-- After changing the setting, redeploy from the Vercel dashboard
+## Sécurité
 
-### Claude Desktop Not Connecting
-- Verify config path is absolute, not relative
-- Check server is running (health endpoint)
-- Restart Claude Desktop after config changes
-- Check Claude Desktop logs for errors
+Les MCP Apps tournent dans des iframes sandboxées avec :
+- Permissions restreintes
+- Communication JSON-RPC loggable
+- Templates HTML pré-déclarés
+- Consentement utilisateur possible pour les appels de tools
 
-### QR Code Not Displaying
-- Ensure `dist/index.html` exists (run `npm run build`)
-- Check browser console for errors
-- Verify server can serve the HTML file
+## Ressources
 
-## Contributing
-
-Contributions welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## License
-
-MIT
-
-## Support
-
-- **Documentation:** See [QUICKSTART.md](QUICKSTART.md) and [DEPLOYMENT.md](DEPLOYMENT.md)
-- **Issues:** Report bugs or request features via GitHub issues
-- **MCP Protocol:** https://modelcontextprotocol.io
+- [Documentation MCP Apps](https://modelcontextprotocol.io/docs/extensions/apps)
+- [SDK ext-apps](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps)
+- [Exemples officiels](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
