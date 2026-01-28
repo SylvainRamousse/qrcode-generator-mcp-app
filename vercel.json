@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/mcp.ts": {
+      "memory": 1024,
+      "maxDuration": 60,
+      "includeFiles": "dist/mcp-app.html"
+    }
+  },
+  "rewrites": [
+    { "source": "/mcp", "destination": "/api/mcp" }
+  ]
+}

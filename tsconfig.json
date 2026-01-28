@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["index.ts"],
-  "exclude": ["src", "vite.config.ts"]
+  "include": ["index.ts", "src/server.ts", "api/mcp.ts"],
+  "exclude": ["src/mcp-app.ts", "vite.config.ts"]
 }
