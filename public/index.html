@@ -46,19 +46,6 @@
       font-family: 'SF Mono', Consolas, monospace;
       font-size: 0.9em;
     }
-    pre {
-      background: #1a1a1a;
-      color: #f0f0f0;
-      padding: 1rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      margin-bottom: 1rem;
-    }
-    pre code {
-      background: none;
-      padding: 0;
-      color: inherit;
-    }
     .endpoint {
       background: #e8f5e9;
       border: 1px solid #c8e6c9;
@@ -70,18 +57,29 @@
       background: #c8e6c9;
       font-weight: 600;
     }
+    .steps {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .steps ol {
+      margin-left: 1.5rem;
+      margin-bottom: 0;
+    }
+    .steps li {
+      margin-bottom: 0.75rem;
+    }
+    .steps li:last-child {
+      margin-bottom: 0;
+    }
     ol {
       margin-left: 1.5rem;
       margin-bottom: 1rem;
     }
     li {
       margin-bottom: 0.5rem;
-    }
-    .note {
-      background: #fff3e0;
-      border-left: 4px solid #ff9800;
-      padding: 1rem;
-      margin: 1rem 0;
     }
     a {
       color: #1976d2;
@@ -104,25 +102,16 @@
       <strong>MCP Endpoint:</strong> <code>https://qrcode-mcp.apps.ramousse.com/api/mcp</code>
     </div>
 
-    <h2>Setup in Claude Desktop</h2>
+    <h2>Setup in Claude</h2>
 
-    <p>Edit your Claude Desktop configuration file:</p>
-    <pre><code>~/Library/Application Support/Claude/claude_desktop_config.json</code></pre>
-
-    <p>Add the following to connect via <code>mcp-remote</code>:</p>
-    <pre><code>{
-  "mcpServers": {
-    "qrcode-generator": {
-      "command": "npx",
-      "args": ["mcp-remote", "https://qrcode-mcp.apps.ramousse.com/api/mcp"]
-    }
-  }
-}</code></pre>
-
-    <p>Then restart Claude Desktop.</p>
-
-    <div class="note">
-      <strong>Pro/Max/Team/Enterprise users:</strong> You can also add this server via <strong>Settings → Integrations → Add Custom Integration</strong> using the endpoint URL above.
+    <div class="steps">
+      <ol>
+        <li>Open <strong>Settings</strong></li>
+        <li>Go to <strong>Connectors</strong></li>
+        <li>Click <strong>Add Custom Connector</strong></li>
+        <li>Paste the endpoint URL above</li>
+        <li>Done!</li>
+      </ol>
     </div>
 
     <h2>Usage</h2>
