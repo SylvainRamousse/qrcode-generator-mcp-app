@@ -39,8 +39,6 @@ The MCP endpoint will be available at `https://your-project.vercel.app/mcp`.
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
-### Option 1: Local Server (stdio)
-
 ```json
 {
   "mcpServers": {
@@ -52,20 +50,9 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 }
 ```
 
-### Option 2: Remote Server (Vercel)
-
-```json
-{
-  "mcpServers": {
-    "qrcode-generator": {
-      "type": "url",
-      "url": "https://your-project.vercel.app/mcp"
-    }
-  }
-}
-```
-
 After saving the config, restart Claude Desktop.
+
+> **Note:** Claude Desktop currently only supports local stdio servers. The remote Vercel deployment can be used with other MCP clients that support HTTP transport.
 
 ## Using in Claude
 
