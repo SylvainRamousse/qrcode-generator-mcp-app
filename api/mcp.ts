@@ -6,7 +6,8 @@ import { createServer } from "../src/server.js";
 const app = express();
 app.use(express.json());
 
-app.post("/api/mcp", async (req, res) => {
+// Handle both /mcp (from rewrite) and /api/mcp (direct)
+const handlePost = async (req: express.Request, res: express.Response) => {
   const distDir = join(process.cwd(), "dist");
   const server = createServer(distDir);
   const transport = new StreamableHTTPServerTransport({
@@ -18,9 +19,9 @@ app.post("/api/mcp", async (req, res) => {
   });
   await server.connect(transport);
   await transport.handleRequest(req, res, req.body);
-});
+};
 
-app.get("/api/mcp", async (req, res) => {
+const handleGet = async (req: express.Request, res: express.Response) => {
   const distDir = join(process.cwd(), "dist");
   const server = createServer(distDir);
   const transport = new StreamableHTTPServerTransport({
@@ -32,17 +33,27 @@ app.get("/api/mcp", async (req, res) => {
   });
   await server.connect(transport);
   await transport.handleRequest(req, res);
-});
+};
 
-app.delete("/api/mcp", (_req, res) => {
+const handleDelete = (_req: express.Request, res: express.Response) => {
   res.status(405).json({ error: "Session termination not supported in stateless mode" });
-});
+};
 
-app.options("/api/mcp", (_req, res) => {
+const handleOptions = (_req: express.Request, res: express.Response) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept");
   res.status(204).end();
-});
+};
+
+// Register routes for both paths
+app.post("/mcp", handlePost);
+app.post("/api/mcp", handlePost);
+app.get("/mcp", handleGet);
+app.get("/api/mcp", handleGet);
+app.delete("/mcp", handleDelete);
+app.delete("/api/mcp", handleDelete);
+app.options("/mcp", handleOptions);
+app.options("/api/mcp", handleOptions);
 
 export default app;
