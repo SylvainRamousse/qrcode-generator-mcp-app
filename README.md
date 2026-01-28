@@ -1,13 +1,6 @@
-# Color Picker MCP App
+# QR Code Generator MCP App
 
-Une application MCP simple qui expose une interface interactive de color picker.
-
-## Architecture
-
-Cette MCP App démontre :
-- **Serveur MCP** : Expose un tool `pick_color` avec métadonnées UI
-- **Ressource UI** : Interface HTML/JS interactive qui s'affiche dans Claude
-- **Communication bidirectionnelle** : L'UI peut mettre à jour le contexte du modèle
+An MCP App that generates QR codes from text, URLs, phone numbers, or any string. Supports both local (stdio) and remote (Vercel) deployment.
 
 ## Installation
 
@@ -16,123 +9,92 @@ npm install
 npm run build
 ```
 
-## Utilisation
+## Usage
 
-### 1. Démarrer le serveur
+### Local Mode (stdio)
+
+Run the server locally:
 
 ```bash
 npm start
 ```
 
-### 2. Configurer dans Claude Desktop
+Or for development with hot reload:
 
-Ajoute dans `~/Library/Application Support/Claude/claude_desktop_config.json` :
+```bash
+npm run serve
+```
+
+### Remote Mode (Vercel)
+
+Deploy to Vercel:
+
+```bash
+npx vercel --prod
+```
+
+The MCP endpoint will be available at `https://your-project.vercel.app/mcp`.
+
+## Configure in Claude Desktop
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+### Option 1: Local Server (stdio)
 
 ```json
 {
   "mcpServers": {
-    "color-picker": {
+    "qrcode-generator": {
       "command": "node",
-      "args": ["/chemin/vers/color-picker-mcp/dist/index.js"]
+      "args": ["/path/to/qrcode-generator-mcp-app/dist/index.js"]
     }
   }
 }
 ```
 
-### 3. Utiliser dans Claude
+### Option 2: Remote Server (Vercel)
 
-Une fois configuré, tu peux demander à Claude :
-- "Open the color picker"
-- "Let me choose a color"
-- "Pick a color for my website"
-
-L'interface s'affichera directement dans la conversation !
-
-## Structure du projet
-
-```
-color-picker-mcp/
-├── src/
-│   └── index.ts          # Serveur MCP
-├── ui/
-│   └── color-picker.html # Interface interactive
-├── package.json
-├── tsconfig.json
-└── README.md
-```
-
-## Concepts clés MCP Apps
-
-### 1. Tool avec UI metadata
-
-```typescript
+```json
 {
-  name: "pick_color",
-  description: "Open interactive color picker",
-  _meta: {
-    ui: {
-      resourceUri: "ui://color-picker"
+  "mcpServers": {
+    "qrcode-generator": {
+      "type": "url",
+      "url": "https://your-project.vercel.app/mcp"
     }
   }
 }
 ```
 
-### 2. UI Resource
+After saving the config, restart Claude Desktop.
 
-Le serveur sert du HTML via le schéma `ui://` :
+## Using in Claude
 
-```typescript
-server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
-  if (request.params.uri === "ui://color-picker") {
-    return { contents: [{ uri: request.params.uri, mimeType: "text/html", text: html }] };
-  }
-});
+Once configured, ask Claude:
+- "Generate a QR code for https://example.com"
+- "Create a QR code with my phone number"
+- "Make a QR code for this text"
+
+The interactive UI will appear in the conversation.
+
+## Project Structure
+
+```
+qrcode-generator-mcp-app/
+├── index.ts              # Local stdio entry point
+├── src/
+│   ├── server.ts         # Shared MCP server factory
+│   └── mcp-app.ts        # Client-side UI logic
+├── api/
+│   └── mcp.ts            # Vercel serverless function
+├── mcp-app.html          # UI template
+├── vite.config.ts        # Vite build config
+├── vercel.json           # Vercel deployment config
+└── package.json
 ```
 
-### 3. App API dans l'UI
+## Development
 
-L'interface utilise `@modelcontextprotocol/ext-apps` :
-
-```javascript
-import { App } from "@modelcontextprotocol/ext-apps";
-
-const app = new App();
-await app.connect();
-
-// Mettre à jour le contexte du modèle
-await app.updateModelContext({
-  content: [{ type: "text", text: "User selected #3b82f6" }]
-});
-
-// Envoyer un message
-await app.sendMessage({
-  role: "user", 
-  content: [{ type: "text", text: "I've selected the color" }]
-});
-```
-
-## Étendre cet exemple
-
-Tu peux facilement adapter ce template pour créer :
-- 📊 Dashboards de données
-- 📝 Formulaires complexes
-- 📈 Visualisations interactives
-- 🗺️ Cartes interactives
-- 📄 Viewers de documents
-- ⚙️ Configuration wizards
-
-L'essentiel est que l'UI communique avec le host via `postMessage` et que le serveur MCP déclare correctement les métadonnées UI.
-
-## Sécurité
-
-Les MCP Apps tournent dans des iframes sandboxées avec :
-- Permissions restreintes
-- Communication JSON-RPC loggable
-- Templates HTML pré-déclarés
-- Consentement utilisateur possible pour les appels de tools
-
-## Ressources
-
-- [Documentation MCP Apps](https://modelcontextprotocol.io/docs/extensions/apps)
-- [SDK ext-apps](https://www.npmjs.com/package/@modelcontextprotocol/ext-apps)
-- [Exemples officiels](https://github.com/modelcontextprotocol/ext-apps/tree/main/examples)
+- `npm run build` — Build for production (Vite + TypeScript)
+- `npm run dev` — Watch mode for TypeScript
+- `npm run serve` — Run locally with tsx
+- `npx vercel dev` — Test Vercel function locally
